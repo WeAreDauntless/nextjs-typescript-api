@@ -1,20 +1,11 @@
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-
-const fetchCoins = async () => {
-  const { data } = await axios.get(
-    "/api/coins"
-  );
-
-  return data;
-};
+import { useCoins } from "../hooks/useCoins";
 
 const Home: React.FC = () => {
-  const { data, isLoading, error } = useQuery(["coins"], fetchCoins);
+  const { data, isLoading, error } = useCoins();
 
   if (isLoading) {
     return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
@@ -48,7 +39,7 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* End hero unit */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {data.map((coin) => (
+            {data?.map((coin) => (
               <div key={coin.id} className="flex flex-col">
                 <Image
                   src={coin.image}

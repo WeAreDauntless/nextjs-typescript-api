@@ -1,28 +1,12 @@
 import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
-import { Coin } from "../../types";
-import axios from "axios";
 import Link from "next/link";
-
-const fetchCoin = async (symbol: string) => {
-  const { data } = await axios.get(
-    `/api/coins/${symbol}`
-  );
-
-  return data;
-};
+import { useCoin } from "../../hooks/useCoin";
 
 const Currency: React.FC = () => {
   const router = useRouter();
   const { symbol } = router.query;
 
-  const { data: coin, isLoading, error } = useQuery<Coin>(
-    ["coin", symbol],
-    () => fetchCoin(symbol as string),
-    {
-      enabled: !!symbol,
-    }
-  );
+  const { data: coin, isLoading, error } = useCoin(symbol as string);
 
   if (isLoading || !coin) {
     return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
