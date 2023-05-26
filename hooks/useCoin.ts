@@ -1,14 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { Coin } from "../types";
-
-const fetchCoin = async (symbol: string) => {
-  const { data } = await axios.get(
-    `/api/coins/${symbol}`
-  );
-
-  return data;
-};
+import { fetchCoin } from "../api/fetchCoin"
 
 export const useCoin = (symbol: string) => {
   const { data, isLoading, error } = useQuery<Coin, Error>(

@@ -1,6 +1,10 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useCoin } from "../../hooks/useCoin";
+import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { fetchCoin } from "../../api/fetchCoin"
+import { Coin } from "../../types";
+import { GetServerSideProps } from "next";
 
 const Currency: React.FC = () => {
   const router = useRouter();
@@ -39,5 +43,21 @@ const Currency: React.FC = () => {
     </div>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = async ({ query: { symbol } }) => {
+  const queryClient = new QueryClient()
+
+  // prefetch data on the server
+  await queryClient.fetchQuery<Coin, Error>(
+    ["coin", symbol], () => fetchCoin(symbol as string)
+  )
+
+  return {
+    props: {
+      // dehydrate query cache
+      dehydratedState: dehydrate(queryClient)
+    }
+  }
+}
 
 export default Currency;

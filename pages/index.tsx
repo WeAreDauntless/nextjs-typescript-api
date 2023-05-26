@@ -3,6 +3,10 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { useCoins } from "../hooks/useCoins";
+import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { fetchCoins } from "../api/fetchCoins"
+import { Coin } from "../types";
+import { GetServerSideProps } from "next";
 
 const Home: React.FC = () => {
   const { data, isLoading, error } = useCoins();
@@ -71,5 +75,19 @@ const Home: React.FC = () => {
     </>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const queryClient = new QueryClient()
+
+  // prefetch data on the server
+  await queryClient.fetchQuery<Coin[], Error>(["coins"], fetchCoins)
+
+  return {
+    props: {
+      // dehydrate query cache
+      dehydratedState: dehydrate(queryClient)
+    }
+  }
+}
 
 export default Home;
