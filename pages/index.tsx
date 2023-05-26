@@ -1,9 +1,29 @@
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+
+const fetchCoins = async () => {
+  const { data } = await axios.get(
+    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=45"
+  );
+
+  return data;
+};
 
 const Home: React.FC = () => {
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9]; // Replace this with your actual data
+  const { data, isLoading, error } = useQuery(["coins"], fetchCoins);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching data: {error.message}</div>;
+  }
+
   return (
     <>
       <Head>
@@ -24,27 +44,29 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* End hero unit */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {cards.map((card) => (
-              <div key={card} className="flex flex-col">
+            {data.map((coin) => (
+              <div key={coin.id} className="flex flex-col">
                 <Image
-                  src={`https://picsum.photos/200/200`}
-                  alt="placeholder"
+                  src={coin.image}
+                  alt={coin.name}
                   width={200}
                   height={200}
                   className="object-cover object-center"
                 />
                 <div className="flex-1 p-4">
-                  <h2 className="text-xl font-semibold mb-2">Currency Name</h2>
+                  <h2 className="text-xl font-semibold mb-2">{coin.name}</h2>
                   <ul className="list-disc pl-5">
-                    <li>Current Price: xxx</li>
-                    <li>24h High: xxx</li>
-                    <li>24h Low: xxx</li>
+                    <li>Current Price: {coin.current_price.toFixed(2)}</li>
+                    <li>24h High: {coin.high_24h.toFixed(2)}</li>
+                    <li>24h Low: {coin.low_24h.toFixed(2)}</li>
                   </ul>
                 </div>
                 <div className="p-4">
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    More
-                  </button>
+                  <Link href={`/currency/${coin.id}`}>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                      More
+                    </button>
+                  </Link>
                 </div>
               </div>
             ))}
