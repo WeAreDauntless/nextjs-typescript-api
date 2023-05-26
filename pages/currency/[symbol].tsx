@@ -25,15 +25,19 @@ const Currency: React.FC = () => {
   );
 
   if (isLoading || !coin) {
-    return <div>Loading...</div>;
+    return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+      Loading...
+    </div>;
   }
 
   if (error) {
-    return <div>Error fetching data: {error.message}</div>;
+    return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+      Error fetching data: {error.message}
+    </div>;
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
       <h1 className="text-4xl font-bold text-gray-900 mb-4">{coin.name}</h1>
       <ul className="list-disc pl-5 mb-8">
         <li>Current Price: {coin.market_data.current_price.usd.toFixed(2)}</li>

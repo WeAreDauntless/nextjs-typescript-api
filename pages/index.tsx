@@ -17,11 +17,15 @@ const Home: React.FC = () => {
   const { data, isLoading, error } = useQuery(["coins"], fetchCoins);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+      Loading...
+    </div>;
   }
 
   if (error) {
-    return <div>Error fetching data: {error.message}</div>;
+    return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+      Error fetching data: {error.message}
+    </div>;
   }
 
   return (
