@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const fetchCoin = async (symbol: string) => {
   const { data } = await axios.get(
-    `https://api.coingecko.com/api/v3/coins/${symbol}`
+    `/api/coins/${symbol}`
   );
 
   return data;
